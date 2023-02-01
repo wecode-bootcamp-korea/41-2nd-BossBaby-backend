@@ -16,7 +16,7 @@ updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 primary key (id),
 foreign key (seller_id) references sellers (id),
 foreign key (sub_category_id) references sub_categories (id),
-foreign key (condition_id) references conditions(id)
+foreign key (condition_id) references conditions (id)
 );
 
 -- migrate:down
