@@ -12,4 +12,12 @@ const kakaoLogin = catchAsync(async (req, res) => {
   return res.status(200).json({ accessToken: accessToken });
 });
 
-module.exports = { kakaoLogin };
+const userInfo = catchAsync(async (req, res) => {
+  const info = await userService.userInfo(req.userId);
+
+  if (!info) detectError("NEED_USER_INFO", 401);
+
+  return res.status(200).json({ data: info });
+});
+
+module.exports = { kakaoLogin, userInfo };
