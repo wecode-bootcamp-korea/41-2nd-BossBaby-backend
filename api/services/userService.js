@@ -40,4 +40,11 @@ const kakaoLogin = async (kakaoToken) => {
   return (accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET));
 };
 
-module.exports = { kakaoLogin };
+//points 확인
+const userInfo = async (userId) => {
+  const info = await userDao.userInfo(userId);
+
+  return info;
+};
+
+module.exports = { kakaoLogin, userInfo };
