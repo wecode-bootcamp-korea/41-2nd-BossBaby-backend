@@ -3,7 +3,7 @@ const globalErrorHandler = (err, req, res, next) => {
 
   const statusCode = err.statusCode || 500;
 
-  return res, statusCode(statusCode).json({ message: err.message });
+  return res.statusCode(statusCode).json({ message: err.message });
 };
 
 const catchAsync = (func) => {
