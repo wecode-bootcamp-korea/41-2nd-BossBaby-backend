@@ -1,21 +1,21 @@
-const SortOption = Object.freeze({
-  recent: 'ORDER BY p.created_at DESC',
-  favorite: 'ORDER BY p.total_likes',
-  price_asc: 'ORDER BY p.price',
-  price_dsc: 'ORDER BY p.price DESC',
+const SortOptionEnum = Object.freeze({
+  RECENT: 'ORDER BY p.created_at DESC',
+  FAVORITE: 'ORDER BY p.total_likes',
+  PRICE_ASC: 'ORDER BY p.price',
+  PRICE_DSC: 'ORDER BY p.price DESC',
 });
 
 const SubCategoryId = Object.freeze({
-  inner: 1,
-  topbottom: 2,
-  onepiece: 3,
-  shoes: 4,
-  accessory: 5,
-  bedding: 6,
-  toy: 7,
+  INNER: 1,
+  TOP_BOTTOM: 2,
+  ONE_PIECE: 3,
+  SHOES: 4,
+  ACCESSORY: 5,
+  BEDDING: 6,
+  TOY: 7,
 });
 
 module.exports = {
-  SortOption,
+  SortOptionEnum,
   SubCategoryId,
 };
