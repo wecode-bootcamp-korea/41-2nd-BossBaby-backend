@@ -19,6 +19,7 @@ describe("KAKAO-LOGIN", () => {
     await appDataSource.destroy();
   });
 
+  //token 없을 경우
   test("FAILED: NEED_ACCESS_TOKEN", async () => {
     await request(app)
       .post("/auth/kakao-login")
@@ -26,6 +27,7 @@ describe("KAKAO-LOGIN", () => {
       .expect(404);
   });
 
+  //로그인 성공
   test("SUCCESS: LOGIN_SUCCESS_WITH_ACCESS_TOKEN", async () => {
     axios.get = jest.fn().mockReturnValue({
       data: {
@@ -46,6 +48,7 @@ describe("KAKAO-LOGIN", () => {
       .expect(200);
   });
 
+  //로그인 실패
   test("FAILED: LOGIN_FAILED_NO_KAKAO_USER_INFORMATION", async () => {
     axios.get = jest.fn().mockReturnValue({
       data: {
