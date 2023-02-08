@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
-const detectError = require("../utils/detectError");
+const { detectError } = require("../utils/detectError");
 const userDao = require("../models/userDao");
 
 const kakaoLogin = async (kakaoToken) => {
   const result = await axios.get("https://kapi.kakao.com/v2/user/me", {
     headers: {
-      Authorization: `Bearer ${kakaoToken}`,
-      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
+      authorization: `Bearer ${kakaoToken}`,
+      "Content-type": "application/x-www-form-urlencoded;charset=utf-8",
     },
   });
 
@@ -37,6 +37,7 @@ const kakaoLogin = async (kakaoToken) => {
       process.env.JWT_SECRET
     ));
   }
+
   return (accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET));
 };
 
