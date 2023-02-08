@@ -43,4 +43,24 @@ const createUser = async (kakaoId, nickname, profile_image, email) => {
   }
 };
 
-module.exports = { checkUserBykakaoId, createUser };
+const userInfo = async (userId) => {
+  try {
+    const [info] = await appDataSource.query(
+      `
+      SELECT
+        name,
+        ifnull(points, 0) points
+      FROM
+        users
+      WHERE
+        id =?
+      `,
+      [userId]
+    );
+    return info;
+  } catch (error) {
+    detectError("GET_USER_INFO_FAILED", 401);
+  }
+};
+
+module.exports = { checkUserBykakaoId, createUser, userInfo };
