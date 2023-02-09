@@ -1,4 +1,4 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
 const validateToken = async (req, res, next) => {
   try {
@@ -7,7 +7,7 @@ const validateToken = async (req, res, next) => {
     req.userId = decode.userId;
     next();
   } catch (err) {
-    await res.status(401).json({ message: "Invalid Access Token!" });
+    await res.status(401).json({ message: 'Invalid Access Token!' });
     next(err);
   }
 };
