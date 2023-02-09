@@ -3,7 +3,7 @@ const { catchAsync } = require("../middlewares/error");
 const { detectError } = require("../utils/detectError");
 
 const postOrder = catchAsync(async (req, res) => {
-  const userId = req.userId;
+  const userId = req.userId.id;
   if (!userId) detectError("POST_ORDER_ERROR", 400);
 
   const { address, totalprice, productId } = req.body;

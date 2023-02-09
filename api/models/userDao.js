@@ -19,7 +19,7 @@ const checkUserBykakaoId = async (kakaoId) => {
 //기존 유저가 아닐 경우, 기본 정보 INSERT 하여 유저(회원가입)
 const createUser = async (kakaoId, nickname, profile_image, email) => {
   try {
-    return await appDataSource.query(
+    const [newUser] =  await appDataSource.query(
       `
       INSERT INTO users (
         kakao_id,
@@ -30,6 +30,8 @@ const createUser = async (kakaoId, nickname, profile_image, email) => {
       `,
       [kakaoId, nickname, profile_image, email]
     );
+
+    return newUser
   } catch (error) {
     console.log(error);
     detectError("CANNOT_CREATE_USER", 400);
