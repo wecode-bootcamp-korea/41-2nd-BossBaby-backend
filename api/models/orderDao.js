@@ -9,11 +9,11 @@ const OrderStatusEnum = Object.freeze({
   ORDER_DONE: 4,
 });
 
-const postOrder = async (userId, address, totalPrice, productId) => {
+const postOrder = async (userId, address, totalprice, productId) => {
   try {
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    await appDataSource.query(
+    await queryRunner.query(
       `
       INSERT INTO orders(
         user_id,
@@ -23,7 +23,7 @@ const postOrder = async (userId, address, totalPrice, productId) => {
         order_status_id
       ) VALUES ( ?, ?, ?, ?, ${OrderStatusEnum.ORDER_DONE})
       `,
-      [userId, address, totalPrice, productId]
+      [userId, address, totalprice, productId]
     );
 
     await queryRunner.query(
@@ -31,14 +31,14 @@ const postOrder = async (userId, address, totalPrice, productId) => {
       UPDATE
         users
       SET
-        points = points - ${totalPrice}
+        points = points - ${totalprice}
       WHERE
         id = ?
       `,
       [userId]
     );
 
-    await queryRunner.commitTransaction();
+   await queryRunner.commitTransaction();
   } catch (error) {
     await queryRunner.rollbackTransaction();
     throw error;

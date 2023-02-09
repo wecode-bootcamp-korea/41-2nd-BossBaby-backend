@@ -37,7 +37,7 @@ const kakaoLogin = async (kakaoToken) => {
       process.env.JWT_SECRET
     ));
   }
-  return (accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET));
+  return accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET);
 };
 
 const userInfo = async (userId) => {

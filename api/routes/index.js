@@ -7,4 +7,5 @@ const orderRouter = require("./orderRouter");
 router.use("/auth", userRouter.router)
 router.use("/orders", orderRouter.router);
 
-module.exports = router;
+module.exports = 
+  router
