@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const axios = require("axios");
-const detectError = require("../utils/detectError");
+const  {detectError}= require("../utils/detectError");
 const userDao = require("../models/userDao");
 
 const kakaoLogin = async (kakaoToken) => {
