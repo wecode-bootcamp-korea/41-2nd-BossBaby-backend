@@ -1,11 +1,13 @@
 const productDao = require('../models/productDao');
 
 const postSellerProduct = async (title, images, price, description, region, exchangeable, subCategoryId, conditionId, userId) => {
-  const [seller] = await productDao.getSellerId(userId);
-  if (!seller) {
+  const [sellerExist] = await productDao.getSellerId(userId);
+  if (!sellerExist) {
     await productDao.registerSeller(userId);
-    const [seller] = await productDao.getSellerId(userId);
-    return await productDao.postSellerProduct(title, images, price, description, region, exchangeable, subCategoryId, conditionId, userId, seller.id);
+
+    const [sellerExist] = await productDao.getSellerId(userId);
+
+    return await productDao.postSellerProduct(title, images, price, description, region, exchangeable, subCategoryId, conditionId, userId, sellerExist.id);
   }
   const result = await productDao.postSellerProduct(
     title,
@@ -24,7 +26,7 @@ const postSellerProduct = async (title, images, price, description, region, exch
 
 const getProductList = async (subCategory, sort, offset, limit) => {
   if (!sort) {
-    const sort = 'recent';
+    const sort = 'RECENT';
     const result = await productDao.getProductList(subCategory, sort, offset, limit);
     return result;
   }
@@ -96,8 +98,12 @@ const getRecentList = async (offset, limit) => {
   return result;
 };
 
-const searchProductList = async (subCategory, sort, offset, limit, search) => {
-  const result = await productDao.searchProductList(subCategory, sort, offset, limit, search);
+const searchProductList = async (sort, offset, limit, search) => {
+  if (!sort) {
+    const sort = 'RECENT';
+    return await productDao.searchProductList(sort, offset, limit, search);
+  }
+  const result = await productDao.searchProductList(sort, offset, limit, search);
   return result;
 };
 

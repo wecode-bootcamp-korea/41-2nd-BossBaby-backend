@@ -15,7 +15,14 @@ const SubCategoryId = Object.freeze({
   TOY: 7,
 });
 
+const ProductStatusEnum = Object.freeze({
+  selling: 1,
+  pending: 2,
+  soldout: 3,
+});
+
 module.exports = {
   SortOptionEnum,
   SubCategoryId,
+  ProductStatusEnum,
 };

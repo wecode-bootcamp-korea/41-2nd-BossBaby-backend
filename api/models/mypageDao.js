@@ -1,4 +1,5 @@
 const { appDataSource } = require('./appDataSource');
+const { ProductStatusEnum } = require('../utils/enum');
 
 const getSellerId = async (userId) => {
   const [sellerId] = await appDataSource.query(
@@ -17,7 +18,7 @@ const getSellerInfo = async (sellerId, userId) => {
   return await appDataSource.query(
     `
       SELECT
-        u.nickname,
+        u.name,
         u.description,
         u.profile_image,
         (
@@ -40,7 +41,7 @@ const getSellerReview = async (sellerId) => {
         r.id,
         r.review_details,
         r.grade,
-        u.nickname,
+        u.name,
         JSON_ARRAYAGG(
           ri.img_url
         ) AS images
@@ -91,6 +92,7 @@ const getSellingProducts = async (sellerId) => {
       INNER JOIN 
         product_status ps ON ps.id = p.product_status_id
       WHERE p.seller_id = ?
+      ORDER BY p.created_at DESC
     `,
     [sellerId]
   );
@@ -116,6 +118,18 @@ const getOrderProducts = async (userId) => {
   );
 };
 
+const updateProductStatus = async (productId, status) => {
+  return await appDataSource.query(
+    `
+      UPDATE
+        products
+      SET product_status_id = ${ProductStatusEnum[status]}
+      WHERE id = ?
+    `,
+    [productId]
+  );
+};
+
 module.exports = {
   getSellerId,
   getSellerInfo,
@@ -123,4 +137,5 @@ module.exports = {
   getLikesList,
   getSellingProducts,
   getOrderProducts,
+  updateProductStatus,
 };
