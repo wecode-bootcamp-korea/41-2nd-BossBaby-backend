@@ -20,7 +20,6 @@ const getLikesList = async (userId) => {
 
 const getSellingProducts = async (userId) => {
   const sellerId = await mypageDao.getSellerId(userId);
-
   const result = await mypageDao.getSellingProducts(sellerId.id, userId);
   return result;
 };
@@ -30,10 +29,16 @@ const getOrderProducts = async (userId) => {
   return result;
 };
 
+const updateProductStatus = async (productId, status) => {
+  const result = await mypageDao.updateProductStatus(productId, status);
+  return result;
+};
+
 module.exports = {
   getSellerInfo,
   getSellerReview,
   getLikesList,
   getSellingProducts,
   getOrderProducts,
+  updateProductStatus,
 };

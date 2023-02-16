@@ -30,7 +30,6 @@ const postSellerProduct = async (title, images, price, description, region, exch
   await queryRunner.startTransaction();
 
   try {
-    const imageArr = images.split(',');
     const postProducts = await queryRunner.query(
       `
         INSERT INTO products (
@@ -48,10 +47,22 @@ const postSellerProduct = async (title, images, price, description, region, exch
         ) 
         VALUES ( ?, ?, ?, ?, ?, ?, 0, ?, ?, ?, 1)
       `,
-      [title, price, description, region, parseInt(exchangeable), imageArr[0], parseInt(subCategoryId), parseInt(conditionId), sellerId]
+      [
+        title.replaceAll('"', ''),
+        price,
+        description.replaceAll('"', ''),
+        region.replaceAll('"', ''),
+        exchangeable,
+        images[0],
+        subCategoryId,
+        conditionId,
+        sellerId,
+      ]
     );
+
     let productId = postProducts.insertId;
-    imageArr.map(async (img) => {
+
+    images.map(async (img) => {
       await appDataSource.query(
         `
           INSERT INTO product_images (
@@ -86,7 +97,6 @@ const getProductList = async (subCategory, sort, offset, limit) => {
       `,
       [subCategory]
     );
-
     const productInfo = await queryRunner.query(
       `
         SELECT
@@ -184,7 +194,7 @@ const getSellerInfo = async (productId) => {
         SELECT
           id,
           profile_image,
-          nickname,
+          name,
           description
         FROM users 
         WHERE id = ?
@@ -223,7 +233,7 @@ const getSellerReview = async (productId) => {
           r.id,
           r.review_details,
           r.grade,
-          u.nickname,
+          u.name,
           JSON_ARRAYAGG(
             ri.img_url
           ) AS images
@@ -430,24 +440,11 @@ const getRecentList = async (offset, limit) => {
   return recentProducts;
 };
 
-const searchProductList = async (subCategory, sort, offset, limit, search) => {
-  const queryRunner = appDataSource.createQueryRunner();
-  await queryRunner.connect();
-  await queryRunner.startTransaction();
+const searchProductList = async (sort, offset, limit, search) => {
+  let searchList = '%' + search + '%';
 
-  try {
-    let searchList = '%' + search + '%';
-    const [subCategoryId] = await appDataSource.query(
-      `
-        SELECT
-          id
-        FROM sub_categories
-        WHERE sub_categories = ?
-      `,
-      [subCategory]
-    );
-    const searchProduct = await appDataSource.query(
-      `
+  const searchProduct = await appDataSource.query(
+    `
         SELECT
           p.id,
           p.title,
@@ -456,20 +453,13 @@ const searchProductList = async (subCategory, sort, offset, limit, search) => {
           p.thumbnail_img
         FROM products p
         INNER JOIN product_status ps ON ps.id = p.product_status_id
-        WHERE p.sub_category_id = ? AND title LIKE ?
+        WHERE title LIKE ?
         ${SortOptionEnum[sort]}
         LIMIT ?, ?
       `,
-      [subCategoryId.id, searchList, parseInt(offset), parseInt(limit)]
-    );
-    await queryRunner.commitTransaction(console.log('transaction_commit'));
-    return searchProduct;
-  } catch (err) {
-    await queryRunner.rollbackTransaction(console.log('transaction_rollback'));
-    throw new Error(err);
-  } finally {
-    await queryRunner.release(console.log('transaction_end'));
-  }
+    [searchList, parseInt(offset), parseInt(limit)]
+  );
+  return searchProduct;
 };
 
 module.exports = {

@@ -2,12 +2,13 @@ const productService = require('../services/productService');
 const { catchAsync } = require('../middlewares/error');
 
 const postSellerProduct = catchAsync(async (req, res) => {
-  const { title, images, price, description, region, exchangeable, subCategoryId, conditionId } = req.body;
+  const { title, price, description, region, exchangeable, subCategoryId, conditionId } = req.body;
+  const images = req.files.map(({ location }) => location);
 
-  if (!title || !images || !price || !description || !region || !exchangeable || !subCategoryId || !conditionId) {
+  if (!title || !price || !description || !region || !exchangeable || !subCategoryId || !conditionId) {
     return res.status(400).json({ message: 'INPUT_ERROR' });
   }
-  await productService.postSellerProduct(title, images, price, description, region, exchangeable, subCategoryId, conditionId, req.userId.userId.id);
+  await productService.postSellerProduct(title, images, price, description, region, exchangeable, subCategoryId, conditionId, req.userId.id);
   return res.status(200).json({ message: '판매상품_등록완료' });
 });
 
@@ -19,7 +20,7 @@ const getProductList = catchAsync(async (req, res) => {
   }
 
   const result = await productService.getProductList(subCategory, sort, offset, limit);
-  return res.status(200).json({ productList: result });
+  return res.status(200).json(result);
 });
 
 const countProductList = catchAsync(async (req, res) => {
@@ -54,7 +55,7 @@ const getSellerReview = catchAsync(async (req, res) => {
 
 const updateProductLikes = catchAsync(async (req, res) => {
   const { productId } = req.params;
-  const userId = req.userId.userId.id;
+  const userId = req.userId.id;
   const result = await productService.updateProductLikes(productId, userId);
   return res.status(200).json(result);
 });
@@ -76,12 +77,8 @@ const getRecentList = catchAsync(async (req, res) => {
 });
 
 const searchProductList = catchAsync(async (req, res) => {
-  const { subCategory, sort, offset, limit, search } = req.query;
-  if (!sort) {
-    const sort = 'recent';
-    return await productService.searchProductList(subCategory, sort, offset, limit, search);
-  }
-  const result = await productService.searchProductList(subCategory, sort, offset, limit, search);
+  const { sort, offset, limit, search } = req.query;
+  const result = await productService.searchProductList(sort, offset, limit, search);
   return res.status(200).json(result);
 });
 

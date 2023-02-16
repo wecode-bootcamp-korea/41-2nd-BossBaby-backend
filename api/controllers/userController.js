@@ -15,7 +15,7 @@ const kakaoLogin = catchAsync(async (req, res) => {
 const userInfo = catchAsync(async (req, res) => {
   const info = await userService.userInfo(req.userId);
 
-  if (!info) detectError("NEED_USER_INFO", 401);
+  if (!info) detectError('NEED_USER_INFO', 401);
 
   return res.status(200).json({ data: info });
 });

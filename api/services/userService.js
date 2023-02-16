@@ -27,9 +27,9 @@ const kakaoLogin = async (kakaoToken) => {
   if (!userId) {
     const newUser = await userDao.createUser(kakaoId, nickname, profile_image, email);
 
-    return (accessToken = jwt.sign({ userId: newUser.insertId }, process.env.JWT_SECRET));
+    return (accessToken = jwt.sign({ userId: newUser.insertId }, process.env.JWT_SECRETKEY));
   }
-  return (accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRET));
+  return (accessToken = jwt.sign({ userId: userId }, process.env.JWT_SECRETKEY));
 };
 
 const userInfo = async (userId) => {

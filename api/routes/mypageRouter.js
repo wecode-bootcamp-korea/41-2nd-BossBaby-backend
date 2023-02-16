@@ -9,6 +9,7 @@ router.get('/seller/reviews', validateToken, mypageController.getSellerReview);
 router.get('/likes', validateToken, mypageController.getLikesList);
 router.get('/selling', validateToken, mypageController.getSellingProducts);
 router.get('/orders', validateToken, mypageController.getOrderProducts);
+router.put('/status', validateToken, mypageController.updateProductStatus);
 
 module.exports = {
   router,

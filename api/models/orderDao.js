@@ -1,5 +1,4 @@
-const { appDataSource } = require("./appDataSource");
-const queryRunner = appDataSource.createQueryRunner();
+const { appDataSource } = require('./appDataSource');
 
 // order 상태
 const OrderStatusEnum = Object.freeze({
@@ -10,40 +9,40 @@ const OrderStatusEnum = Object.freeze({
 });
 
 const postOrder = async (userId, address, totalprice, productId) => {
+  const queryRunner = appDataSource.createQueryRunner();
+  await queryRunner.connect();
+  await queryRunner.startTransaction();
+
   try {
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    await queryRunner.query(
-      `
+    `
       INSERT INTO orders(
         user_id,
         address,
         total_price,
         product_id,
         order_status_id
-      ) VALUES ( ?, ?, ?, ?, ${OrderStatusEnum.ORDER_DONE})
-      `,
-      [userId, address, totalprice, productId]
-    );
+      ) VALUES ( ?, ?, ?, ?, ${OrderStatusEnum[ORDER_DONE]})
+    `,
+      [userId, address, totalprice, productId];
+    
+      await queryRunner.query(
+        `
+          UPDATE
+            users
+          SET
+            points = points - ${totalprice}
+          WHERE
+            id = ?
+        `,
+        [userId]
+      );
 
-    await queryRunner.query(
-      `
-      UPDATE
-        users
-      SET
-        points = points - ${totalprice}
-      WHERE
-        id = ?
-      `,
-      [userId]
-    );
-
-   await queryRunner.commitTransaction();
+    await queryRunner.commitTransaction(console.log('transaction_commit'));
   } catch (error) {
-    await queryRunner.rollbackTransaction();
+    await queryRunner.rollbackTransaction(console.log('transaction_rollback'));
     throw error;
   } finally {
-    await queryRunner.release();
+    await queryRunner.release(console.log('transaction_end'));
   }
 };
 

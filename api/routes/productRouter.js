@@ -1,10 +1,11 @@
 const express = require('express');
+const upload = require('../utils/upload');
 const productController = require('../controllers/productController');
 const { validateToken, validateTokenForPublic } = require('../utils/auth');
 
 const router = express.Router();
 
-router.post('', validateToken, productController.postSellerProduct);
+router.post('', validateToken, upload, productController.postSellerProduct);
 router.get('', productController.getProductList);
 router.get('/count', productController.countProductList);
 router.get('/detail/:productId', validateTokenForPublic, productController.getProductDetailByUserId);
